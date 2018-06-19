@@ -1,17 +1,22 @@
 version: '2'
 services:
-  cockpit:
-    image: agentejo/cockpit
+  sqlite-web:
+    image: sqlite-web
+    name: sqlite-web
+    port: 8080:8080 
+    volumes:
+      - ./db:/db
     environment:
       # uncomment and complete these lines to enable letsencrypt support
       # (only works on domains accessible from outside):
-      LETSENCRYPT_HOST: api.pxlwrx.de
+      LETSENCRYPT_HOST: db.pxlwrx.de
       LETSENCRYPT_EMAIL: admin@pxlwrx.de
 
       PORT: 80
-      VIRTUAL_HOST: api.pxlwrx.de
+      VIRTUAL_HOST: db.pxlwrx.de
     networks:
       - reverse-proxy
+    
 networks:
   reverse-proxy:
     external:
