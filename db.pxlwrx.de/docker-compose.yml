@@ -2,7 +2,6 @@ version: '2'
 services:
   sqlite-web:
     image: sqlite-web
-    name: sqlite-web
     volumes:
       - ./db:/db
     environment:
