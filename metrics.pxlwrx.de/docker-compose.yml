@@ -1,47 +1,50 @@
-cadvisor:
-  image: google/cadvisor
-  ports:
-    - 8080:8080
-  volumes:
-    - /:/rootfs:ro
-    - /var/run:/var/run:rw
-    - /sys:/sys:ro
-    - /var/lib/docker:/var/lib/docker:ro
+version: '2'
+services:
+  
+  cadvisor:
+    image: google/cadvisor
+    ports:
+      - 8080:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
 
-metrics-gateway:
-  image: prom/pushgateway
-  ports:
-    - 9091:9091
+  metrics-gateway:
+    image: prom/pushgateway
+    ports:
+      - 9091:9091
 
-prometheus-server:
-  image: prom/prometheus
-  ports:
-    - 9090:9090
-  links:
-    - cadvisor:cadvisor
-    - metrics-gateway:metrics-gateway
-  volumes:
-    - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  prometheus-server:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    links:
+      - cadvisor:cadvisor
+      - metrics-gateway:metrics-gateway
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
-grafana-ui:
-  image: grafana/grafana
-  ports:
-    - 3000:3000
-  environment:
-    - GF_SECURITY_ADMIN_PASSWORD=secret
-  links:
-    - prometheus-server:prometheus
-  environment:
-      # uncomment and complete these lines to enable letsencrypt support
-      # (only works on domains accessible from outside):
-      LETSENCRYPT_HOST: metrics.pxlwrx.de
-      LETSENCRYPT_EMAIL: admin@pxlwrx.de
+  grafana-ui:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=secret
+    links:
+      - prometheus-server:prometheus
+    environment:
+        # uncomment and complete these lines to enable letsencrypt support
+        # (only works on domains accessible from outside):
+        LETSENCRYPT_HOST: metrics.pxlwrx.de
+        LETSENCRYPT_EMAIL: admin@pxlwrx.de
 
-      PORT: 80
-      VIRTUAL_HOST: metrics.pxlwrx.de
-  networks:
-    - reverse-proxy
-      
+        PORT: 80
+        VIRTUAL_HOST: metrics.pxlwrx.de
+    networks:
+      - reverse-proxy
+
 networks:
   reverse-proxy:
     external:
