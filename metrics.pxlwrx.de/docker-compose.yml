@@ -6,6 +6,8 @@ services:
     image: prom/prometheus
     container_name: prometheus_server
     hostname: prometheus_server
+    ports:
+      - 9090:9090
     networks:
       - reverse-proxy
 
@@ -27,8 +29,6 @@ services:
     networks:
       - reverse-proxy
     environment:
-      # uncomment and complete these lines to enable letsencrypt support
-      # (only works on domains accessible from outside):
       LETSENCRYPT_HOST: metrics.pxlwrx.de
       LETSENCRYPT_EMAIL: admin@pxlwrx.de
 
