@@ -39,8 +39,9 @@ grafana-ui:
 
       PORT: 80
       VIRTUAL_HOST: metrics.pxlwrx.de
-    networks:
-      - reverse-proxy
+  networks:
+    - reverse-proxy
+      
 networks:
   reverse-proxy:
     external:
