@@ -1,6 +1,6 @@
 version: '2'
 services:
-  
+
   cadvisor:
     image: google/cadvisor
     ports:
@@ -10,11 +10,15 @@ services:
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker:/var/lib/docker:ro
+    networks:
+      - reverse-proxy
 
   metrics-gateway:
     image: prom/pushgateway
     ports:
       - 9091:9091
+    networks:
+      - reverse-proxy
 
   prometheus-server:
     image: prom/prometheus
@@ -25,6 +29,8 @@ services:
       - metrics-gateway:metrics-gateway
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - reverse-proxy
 
   grafana-ui:
     image: grafana/grafana
