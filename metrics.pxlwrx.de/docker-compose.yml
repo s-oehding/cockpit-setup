@@ -1,55 +1,39 @@
 version: '2'
+
 services:
 
-  cadvisor:
-    image: google/cadvisor
-    ports:
-      - 8080:8080
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:rw
-      - /sys:/sys:ro
-      - /var/lib/docker:/var/lib/docker:ro
-    networks:
-      - reverse-proxy
-
-  metrics-gateway:
-    image: prom/pushgateway
-    ports:
-      - 9091:9091
-    networks:
-      - reverse-proxy
-
-  prometheus-server:
+  prometheus_srv:
     image: prom/prometheus
-    ports:
-      - 9090:9090
-    links:
-      - cadvisor:cadvisor
-      - metrics-gateway:metrics-gateway
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    container_name: prometheus_server
+    hostname: prometheus_server
     networks:
       - reverse-proxy
 
-  grafana-ui:
+  prometheus_node:
+    image: prom/node-exporter
+    container_name: prom_node_exporter
+    hostname: prom_node_exporter
+    depends_on:
+      - prometheus_srv
+    networks:
+      - reverse-proxy
+
+  grafana:
     image: grafana/grafana
-    ports:
-      - 3000:3000
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=secret
-    links:
-      - prometheus-server:prometheus
-    environment:
-        # uncomment and complete these lines to enable letsencrypt support
-        # (only works on domains accessible from outside):
-        LETSENCRYPT_HOST: metrics.pxlwrx.de
-        LETSENCRYPT_EMAIL: admin@pxlwrx.de
-
-        PORT: 80
-        VIRTUAL_HOST: metrics.pxlwrx.de
+    container_name: grafana_server
+    hostname: grafana_server
+    depends_on:
+      - prometheus_srv
     networks:
       - reverse-proxy
+    environment:
+      # uncomment and complete these lines to enable letsencrypt support
+      # (only works on domains accessible from outside):
+      LETSENCRYPT_HOST: metrics.pxlwrx.de
+      LETSENCRYPT_EMAIL: admin@pxlwrx.de
+
+      PORT: 80
+      VIRTUAL_HOST: metrics.pxlwrx.de
 
 networks:
   reverse-proxy:
