@@ -17,6 +17,8 @@ services:
     hostname: prom_node_exporter
     depends_on:
       - prometheus_srv
+    ports:
+      - 9191:9191
     networks:
       - reverse-proxy
 
