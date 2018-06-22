@@ -22,6 +22,19 @@ services:
     volumes_from:
       - "nginx-proxy"
 
+  cockpit:
+    image: agentejo/cockpit
+    environment:
+      # uncomment and complete these lines to enable letsencrypt support
+      # (only works on domains accessible from outside):
+      LETSENCRYPT_HOST: api.pxlwrx.de
+      LETSENCRYPT_EMAIL: admin@pxlwrx.de
+
+      PORT: 80
+      VIRTUAL_HOST: api.pxlwrx.de
+    networks:
+      - reverse-proxy
+
 networks:
   reverse-proxy:
     external:
