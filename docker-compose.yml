@@ -3,6 +3,7 @@ version: '2'
 services: 
   nginx-proxy:
     image: jwilder/nginx-proxy
+    restart: always
     ports:
      - "80:80"
      - "443:443"
@@ -16,6 +17,7 @@ services:
 
   nginx-proxy-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     volumes_from:
@@ -23,6 +25,7 @@ services:
 
   cockpit:
     image: agentejo/cockpit
+    restart: always
     environment:
       # uncomment and complete these lines to enable letsencrypt support
       # (only works on domains accessible from outside):
