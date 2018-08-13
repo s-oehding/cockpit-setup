@@ -34,8 +34,6 @@ services:
 
       PORT: 80
       VIRTUAL_HOST: api.pxlwrx.de
-    volumes:
-      - ./cockpit:/var/www/html
     networks:
       - reverse-proxy
 
