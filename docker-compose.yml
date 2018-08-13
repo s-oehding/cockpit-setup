@@ -19,9 +19,9 @@ services:
     image: jrcs/letsencrypt-nginx-proxy-companion
     restart: always
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     volumes_from:
-      - "nginx-proxy"
+      - nginx-proxy
 
   cockpit:
     image: agentejo/cockpit
@@ -34,6 +34,8 @@ services:
 
       PORT: 80
       VIRTUAL_HOST: api.pxlwrx.de
+    volumes:
+      - ./cockpit:/var/www/html
     networks:
       - reverse-proxy
 
